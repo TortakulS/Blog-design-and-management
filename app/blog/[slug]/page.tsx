@@ -297,7 +297,7 @@ export default function PostPage({
               แนวทางการ validate ใช้วิธีการตรวจสอบตัวอักษรโดยใช้การเทียบตัวอักษร Regular Expression (Regex) <br/>
               เพื่อกำหนดรูปแบบของข้อความที่อนุญาตให้กรอกได้
             </p>
-            <Button type="submit" disabled={!!bodyError} className="w-fit">
+            <Button type="submit" disabled={!!bodyError || !!body || !!author} className="w-fit">
               ส่งความคิดเห็น
             </Button>
           </form>
