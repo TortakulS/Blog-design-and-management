@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model users {
+  id       String @id @default(uuid())
+  username String
+  password String
+}
+
+enum published {
+  publish
+  unpublish
+}
+
+model blogs {
+  id           String        @id @default(uuid())
+  title        String
+  author       String
+  slug         String
+  dscription   String
+  content      String
+  cover_image  String?
+  views_count  Int           @default(0)
+  is_published published     @default(publish)
+  created_at   DateTime      @default(now())
+  update_at    DateTime      @default(now())
+  is_deleted   Boolean       @default(false)
+  deleted_at   DateTime?
+  blogImages   blog_images[]
+  comments     comments[]
+
+  @@index([id])
+}
+
+model blog_images {
+  id        String @id @default(uuid())
+  blog_id   String
+  blogs     blogs  @relation(fields: [blog_id], references: [id])
+  image_url String
+
+  @@index([blog_id])
+}
+
+enum commentStatus {
+  approved
+  pending
+  rejected
+}
+
+model comments {
+  id           String        @id @default(uuid())
+  blog_id      String
+  blogs        blogs         @relation(fields: [blog_id], references: [id])
+  author_name  String
+  comment_text String
+  status       commentStatus @default(pending)
+  is_delete    Boolean       @default(false)
+  deleted_at   DateTime?
+  create_at    DateTime      @default(now())
+  update_at    DateTime      @default(now())
+
+  @@index([blog_id])
+}
