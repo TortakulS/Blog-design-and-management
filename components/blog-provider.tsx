@@ -57,6 +57,7 @@ type BlogContextValue = {
   setCommentStatus: (id: string, status: CommentStatus) => void
   approvedCommentsFor: (postId: string) => Comment[]
   initAppData: () => void
+  isLoading: boolean
 }
 
 const BlogContext = createContext<BlogContextValue | null>(null)
@@ -79,10 +80,12 @@ export function BlogProvider({ children }: { children: ReactNode }) {
   const [comments, setComments] = useState<Comment[]>([])
   const [isAdmin, setIsAdmin] = useState(false)
   const [isAuthLoading, setIsAuthLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
   const initAppData = async () => {
     try {
       const authResponse = await apiService.checkAuthStatus();
       const currentIsAdmin = authResponse.ok;
+      setIsLoading(true)
       setIsAdmin(currentIsAdmin);
 
       const [fetchedPosts, fetchedComments] = await Promise.all([
@@ -96,12 +99,11 @@ export function BlogProvider({ children }: { children: ReactNode }) {
       console.error(error);
     } finally {
       setIsAuthLoading(false);
+      setIsLoading(false)
     }
   };
 
   useEffect(() => {
-
-
     initAppData();
   }, []);
 
@@ -225,7 +227,8 @@ export function BlogProvider({ children }: { children: ReactNode }) {
       setCommentStatus,
       approvedCommentsFor,
       initAppData,
-      publishedPost
+      publishedPost,
+      isLoading
     }),
     [
       posts,
@@ -242,7 +245,8 @@ export function BlogProvider({ children }: { children: ReactNode }) {
       setCommentStatus,
       approvedCommentsFor,
       initAppData,
-      publishedPost
+      publishedPost,
+      isLoading
     ],
   )
 

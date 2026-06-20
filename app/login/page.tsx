@@ -27,11 +27,10 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError("");
 
     try {
       setError("");
+      setIsLoading(true);
       const response = await login(username, password);
       if (response && response.ok) {
         toast.success("เข้าสู่ระบบสำเร็จ");

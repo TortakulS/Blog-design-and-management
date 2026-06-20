@@ -65,15 +65,13 @@ export default function PostPage({
 
 
 
-  const allowedPattern = /^[ก-์๐-๙0-9\s฿]/u;
+  const allowedPattern = /^[ก-์๐-๙0-9\s฿]+$/u
   const handleBodyChange = (value: string) => {
     setBody(value);
-
     if (value === "") {
       setBodyError("");
       return;
     }
-
     if (!allowedPattern.test(value)) {
       setBodyError("ข้อความของคุณมีอักขระพิเศษที่ไม่ได้รับอนุญาต");
     } else {
@@ -293,11 +291,15 @@ export default function PostPage({
             <p className="text-xs text-muted-foreground">
               ความคิดเห็นจะแสดงหลังจากผู้ดูแลอนุมัติแล้ว
             </p>
-            <p  className="text-xs text-muted-foreground bg-red-50 rounded pl-2 pt-1 pb-1">
-              แนวทางการ validate ใช้วิธีการตรวจสอบตัวอักษรโดยใช้การเทียบตัวอักษร Regular Expression (Regex) <br/>
+            <p className="text-xs text-muted-foreground bg-red-50 rounded pl-2 pt-1 pb-1">
+              แนวทางการ validate ใช้วิธีการตรวจสอบตัวอักษรโดยใช้การเทียบตัวอักษร Regular Expression (Regex) <br />
               เพื่อกำหนดรูปแบบของข้อความที่อนุญาตให้กรอกได้
             </p>
-            <Button type="submit" disabled={!!bodyError} className="w-fit">
+            <Button
+              type="submit"
+              disabled={!!bodyError || !body.trim()} 
+              className="w-fit"
+            >
               ส่งความคิดเห็น
             </Button>
           </form>

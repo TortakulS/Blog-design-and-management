@@ -12,7 +12,7 @@ import Image from "next/image";
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 30]
 
 export default function HomePage() {
-  const { posts, isAdmin } = useBlog()
+  const { posts, isAdmin,isLoading } = useBlog()
   const [query, setQuery] = useState("")
   const [pageSize, setPageSize] = useState(10)
   const [page, setPage] = useState(1)
@@ -86,7 +86,14 @@ export default function HomePage() {
           </div>
         </div>
 
-        {filtered.length === 0 ? (
+        {isLoading ? (
+          <div className="py-24 text-center text-muted-foreground flex flex-col items-center justify-center gap-2">
+            {/* คุณสามารถใช้ไอคอนหมุนๆ หรือทำเป็นโครงร่าง Skeleton สวยๆ ตรงนี้ได้ */}
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <p>กำลังโหลดข้อมูล...</p>
+          </div>
+        ) : filtered.length === 0 ? (
+          // 3. ถ้าโหลดเสร็จแล้ว และไม่มีข้อมูลจริงๆ ค่อยแสดงข้อความนี้
           <p className="py-12 text-center text-muted-foreground">
             {query.trim()
               ? `ไม่พบบทความที่ตรงกับ "${query.trim()}"`

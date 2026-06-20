@@ -91,27 +91,33 @@ export function AdminPosts() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
+
     if (!draft.title.trim() || !draft.body.trim()) {
       toast.error("กรุณากรอกหัวข้อและเนื้อหา")
       return
     }
-    if (editingId) {
-      await apiService.updatePost(editingId, draft)
-      initAppData()
-      setLoading(false)
-      toast.success("อัปเดตบทความแล้ว")
-    } else {
-      const newPost = {
-        ...draft,
-      }
-      await apiService.createPost(newPost)
-      initAppData()
-      setLoading(false)
-      toast.success("สร้างบทความใหม่แล้ว")
-    }
 
-    closeForm()
+    try {
+      setLoading(true)
+
+      if (editingId) {
+        await apiService.updatePost(editingId, draft)
+        await initAppData()
+        toast.success("อัปเดตบทความแล้ว")
+      } else {
+        const newPost = { ...draft }
+        await apiService.createPost(newPost)
+        await initAppData()
+        toast.success("สร้างบทความใหม่แล้ว")
+      }
+
+      closeForm() 
+    } catch (error) {
+      console.error(error)
+      toast.error("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง")
+    } finally {
+      setLoading(false) 
+    }
   }
 
   async function handleDelete(post: Post) {
