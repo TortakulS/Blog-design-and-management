@@ -11,9 +11,9 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { apiService } from "@/services/api"
 export function AdminComments() {
-  const { comments, posts, setCommentStatus } = useBlog()
+  const { comments, posts, setCommentStatus,initAppData } = useBlog()
   const [query, setQuery] = useState("")
-
+  
   const postTitle = (postId: string) =>
     posts.find((p) => p.id === postId)?.title ?? "บทความที่ถูกลบ"
 
@@ -32,12 +32,14 @@ export function AdminComments() {
   async function approve(c: Comment) {
     setCommentStatus(c.id, "approved")
     await apiService.approvecomment(c.id, "approved")
+    await initAppData()
     toast.success("อนุมัติความคิดเห็นแล้ว")
   }
 
   async function reject(c: Comment) {
     setCommentStatus(c.id, "rejected")
     await apiService.approvecomment(c.id, "rejected")
+    await initAppData()
     toast.success("ปฏิเสธความคิดเห็นแล้ว")
   }
 
