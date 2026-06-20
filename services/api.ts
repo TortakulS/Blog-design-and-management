@@ -238,7 +238,6 @@ class ApiService {
       body: JSON.stringify({ isAdmin }),
     });
     const data = await response.json();
-    console.log(data)
     return data.post;
   }
 

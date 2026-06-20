@@ -29,15 +29,15 @@ export function AdminComments() {
   const approved = filtered.filter((c) => c.status === "approved")
   const rejected = filtered.filter((c) => c.status === "rejected")
 
-  function approve(c: Comment) {
+  async function approve(c: Comment) {
     setCommentStatus(c.id, "approved")
-    apiService.approvecomment(c.id, "approved")
+    await apiService.approvecomment(c.id, "approved")
     toast.success("อนุมัติความคิดเห็นแล้ว")
   }
 
-  function reject(c: Comment) {
+  async function reject(c: Comment) {
     setCommentStatus(c.id, "rejected")
-    apiService.approvecomment(c.id, "rejected")
+    await apiService.approvecomment(c.id, "rejected")
     toast.success("ปฏิเสธความคิดเห็นแล้ว")
   }
 

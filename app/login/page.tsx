@@ -8,7 +8,7 @@ import { useBlog } from "@/components/blog-provider"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
+import { Loader2 } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -23,9 +23,11 @@ export default function LoginPage() {
   const [username, setusername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     setError("");
 
     try {
@@ -40,12 +42,14 @@ export default function LoginPage() {
         if (response?.status === 401) {
           msg = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
         }
-        setError(msg); 
+        setError(msg);
       }
     } catch (err) {
       const fallbackMsg = "ไม่สามารถเชื่อมต่อกับระบบได้ กรุณาลองใหม่ภายหลัง";
       toast.error(fallbackMsg);
       setError(fallbackMsg);
+    }finally {
+      setIsLoading(false); 
     }
   };
 
@@ -83,8 +87,19 @@ export default function LoginPage() {
                   autoComplete="current-password"
                 />
               </div>
-              <Button type="submit" className="mt-2 w-full">
-                เข้าสู่ระบบ
+              <Button
+                type="submit"
+                className="mt-2 w-full flex items-center justify-center gap-2"
+                disabled={isLoading} // ป้องกันการกดซ้ำตอนกำลังโหลด
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    กำลังเข้าสู่ระบบ...
+                  </>
+                ) : (
+                  "เข้าสู่ระบบ"
+                )}
               </Button>
             </form>
             {error && (

@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { Pencil, Trash2, Plus, X, Search, EyeOff, Globe } from "lucide-react"
+import { Pencil, Trash2, Plus, X, Search, EyeOff, Globe, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { useBlog, type Post } from "@/components/blog-provider"
 import { formatDate } from "@/components/site-header"
@@ -49,6 +49,7 @@ export function AdminPosts() {
   const [draft, setDraft] = useState<Draft>(emptyDraft)
   const [query, setQuery] = useState("")
   const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(false)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -90,6 +91,7 @@ export function AdminPosts() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setLoading(true)
     if (!draft.title.trim() || !draft.body.trim()) {
       toast.error("กรุณากรอกหัวข้อและเนื้อหา")
       return
@@ -97,6 +99,7 @@ export function AdminPosts() {
     if (editingId) {
       await apiService.updatePost(editingId, draft)
       initAppData()
+      setLoading(false)
       toast.success("อัปเดตบทความแล้ว")
     } else {
       const newPost = {
@@ -104,6 +107,7 @@ export function AdminPosts() {
       }
       await apiService.createPost(newPost)
       initAppData()
+      setLoading(false)
       toast.success("สร้างบทความใหม่แล้ว")
     }
 
@@ -174,7 +178,7 @@ export function AdminPosts() {
                 <span className="sr-only">ปิด</span>
               </Button>
             </div>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <form className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="title">หัวข้อ</Label>
                 <Input
@@ -360,8 +364,21 @@ export function AdminPosts() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>ยกเลิก</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleSubmit}>
-                        ตกลง, ดำเนินการต่อ
+                      <AlertDialogAction
+                        onClick={(e) => {
+                          handleSubmit(e);
+                        }}
+                        disabled={loading}
+                        className="flex items-center justify-center gap-2"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            กำลังดำเนินการ...
+                          </>
+                        ) : (
+                          "ตกลง, ดำเนินการต่อ"
+                        )}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>

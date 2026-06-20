@@ -6,7 +6,6 @@ export async function PATCH(req: Request) {
         const cookieStore = await cookies();
         const token = cookieStore.get("session")?.value;
         const { cID, status } = await req.json();
-        console.log(cID,status)
         if (!token) {
             return NextResponse.json({ isAdmin: false, message: "Invalid or expired token" }, { status: 401 });
         }

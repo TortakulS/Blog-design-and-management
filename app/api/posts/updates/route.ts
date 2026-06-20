@@ -35,7 +35,6 @@ export async function PUT(req: Request) {
         if (currentPost && currentPost.cover_image) {
             try {
                 const oldCoverPath = currentPost.cover_image.split('/storage/v1/object/public/images/')[1];
-                console.log("Path ที่กำลังจะส่งไปลบใน Supabase:", oldCoverPath);
                 if (oldCoverPath) {
                     await supabase.storage
                         .from("images")
